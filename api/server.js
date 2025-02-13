@@ -75,6 +75,10 @@ app.post("/embed", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
+
 // ✅ FIX: Ensure query retrieves stored context
 app.post("/chat", async (req, res) => {
   const { query } = req.body;
