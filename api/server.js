@@ -32,12 +32,10 @@ app.post("/embed", async (req, res) => {
     !Array.isArray(texts) ||
     !texts.every((item) => item.text && typeof item.text === "string")
   ) {
-    return res
-      .status(400)
-      .json({
-        error:
-          "Invalid input format, expected an array of objects with a 'text' field.",
-      });
+    return res.status(400).json({
+      error:
+        "Invalid input format, expected an array of objects with a 'text' field.",
+    });
   }
 
   try {
@@ -120,7 +118,9 @@ app.post("/chat", async (req, res) => {
       .join("\n");
 
     if (!context) {
-      return res.status(200).json({ response: "No relevant context found." });
+      return res.status(200).json({
+        response: "I can only answer questions related to Gix2 Software.",
+      });
     }
 
     // Create structured messages
@@ -128,7 +128,7 @@ app.post("/chat", async (req, res) => {
       {
         role: "system",
         content:
-          "You are AI chatbot of Gix2 Software. Answer based on company knowledge and context below:",
+          "You are the AI chatbot of Gix2 Software. Only answer based on the provided company knowledge and context. If you don't know the answer, reply with: 'I can only answer questions related to Gix2 Software.'",
       },
       {
         role: "user",
@@ -140,6 +140,7 @@ app.post("/chat", async (req, res) => {
     const chatResponse = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages,
+      response_format: "json", // Forces the AI to return structured data
     });
 
     if (!chatResponse.choices || chatResponse.choices.length === 0) {
